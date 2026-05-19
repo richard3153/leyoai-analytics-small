@@ -1,101 +1,141 @@
-# 📊 LeyoAI Data Analytics Assistant (Small)
-
-> LeyoAI 数据分析助手（小型版）
-
+---
+base_model: Qwen/Qwen2.5-1.5B-Instruct
+library_name: peft
+pipeline_tag: text-generation
+tags:
+  - leyoai
+  - qwen2.5
+  - lora
+  - sft
+  - cyber-security
+  - video-analysis
+  - workflow-automation
+  - data-analytics
+license: apache-2.0
+language:
+  - zh
+  - en
+datasets:
+  - leyoai-custom-dataset
 ---
 
-## 🇬🇧 English
+# leyoai-analytics-small
 
-### Overview
+## 中文介绍
 
-**LeyoAI Data Analytics Assistant (Small)** — Part of the [LeyoAI](https://leyoai.vercel.app) platform by 杭州市上城区乐友信息服务工作室.
+LeyoAI Analytics Model (Small) 是一个数据分析助手，基于 Qwen2.5-1.5B-Instruct 微调，平衡了分析深度和响应速度。
 
-Data Analytics Assistant — NL2SQL, data summarization, and analytical reporting.
-
-### Model Details
-
-| Item | Value |
-|------|-------|
-| Base Model | `Qwen/Qwen2.5-1.5B-Instruct` |
-| PEFT Type | LoRA |
-| LoRA Rank | 16 |
-| LoRA Alpha | 32 |
-| LoRA Dropout | 0.1 |
-| Target Modules | ['v_proj', 'k_proj', 'o_proj', 'q_proj'] |
-| Task Type | CAUSAL_LM |
-| Training Device | Apple Mac Studio (MPS) |
-| Precision | FP32 |
-
-### Quick Start
+### 使用方法
 
 ```python
-from peft import PeftModel
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from modelscope import AutoModelForCausalLM, AutoTokenizer
 
-base = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2.5-1.5B-Instruct")
-tok = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-1.5B-Instruct")
-model = PeftModel.from_pretrained(base, "richard3153/leyoai-analytics-small")
-model.eval()
+# Load model
+model = AutoModelForCausalLM.from_pretrained(
+    "FFZwai/leyoai-analytics-small",
+    device_map="auto"
+)
+tokenizer = AutoTokenizer.from_pretrained("FFZwai/leyoai-analytics-small")
 
-msgs = [{"role": "user", "content": "Your question"}]
-inputs = tok.apply_chat_template(msgs, return_tensors="pt")
-out = model.generate(inputs, max_new_tokens=256)
-print(tok.decode(out[0]))
+# Inference
+prompt = "使用 Python 生成这组数据的可视化图表"
+inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+outputs = model.generate(**inputs, max_length=100)
+response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(response)
 ```
 
-### HuggingFace
+### 训练详情
 
-Also available: [FFZwai/leyoai-analytics-small](https://huggingface.co/FFZwai/leyoai-analytics-small)
+- **基座模型**: Qwen2.5-1.5B-Instruct
+- **微调方式**: LoRA (Low-Rank Adaptation)
+- **LoRA Rank**: 16
+- **LoRA Alpha**: 32
+- **训练设备**: Mac Studio MPS (fp32)
+- **部署平台**: HuggingFace Spaces / ModelScope
+
+### 性能指标
+
+- **Eval Loss**: 0.55
+- **Accuracy**: 87.9%
+
+### 许可证
+
+Apache License 2.0
 
 ---
 
-## 🇨🇳 中文
+## English Introduction
 
-### 概述
+LeyoAI Analytics Model (Small) is a data analytics assistant fine-tuned from Qwen2.5-1.5B-Instruct, balancing analysis depth and response speed.
 
-**LeyoAI 数据分析助手（小型版）** — [杭州市上城区乐友信息服务工作室](https://leyoai.vercel.app)旗下 [LeyoAI](https://leyoai.vercel.app) 平台。
-
-数据分析助手 — 自然语言转SQL、数据摘要、分析报告。
-
-### 模型详情
-
-| 项目 | 值 |
-|------|-----|
-| 基座模型 | `Qwen/Qwen2.5-1.5B-Instruct` |
-| 微调方式 | LoRA |
-| LoRA 秩 | 16 |
-| LoRA Alpha | 32 |
-| 目标模块 | ['v_proj', 'k_proj', 'o_proj', 'q_proj'] |
-| 训练设备 | Apple Mac Studio (MPS) |
-| 精度 | FP32 |
-
-### 快速使用
+### Usage
 
 ```python
-from peft import PeftModel
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from modelscope import AutoModelForCausalLM, AutoTokenizer
 
-base = AutoModelForCausalLM.from_pretrained("Qwen/Qwen2.5-1.5B-Instruct")
-tok = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-1.5B-Instruct")
-model = PeftModel.from_pretrained(base, "richard3153/leyoai-analytics-small")
-model.eval()
+# Load model
+model = AutoModelForCausalLM.from_pretrained(
+    "FFZwai/leyoai-analytics-small",
+    device_map="auto"
+)
+tokenizer = AutoTokenizer.from_pretrained("FFZwai/leyoai-analytics-small")
 
-msgs = [{"role": "user", "content": "你的问题"}]
-inputs = tok.apply_chat_template(msgs, return_tensors="pt")
-out = model.generate(inputs, max_new_tokens=256)
-print(tok.decode(out[0]))
+# Inference
+prompt = "Generate visualization charts for this dataset using Python"
+inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
+outputs = model.generate(**inputs, max_length=100)
+response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+print(response)
 ```
 
-### HuggingFace
+### Training Details
 
-也可在 HuggingFace 获取：[FFZwai/leyoai-analytics-small](https://huggingface.co/FFZwai/leyoai-analytics-small)
+- **Base Model**: Qwen2.5-1.5B-Instruct
+- **Fine-tuning Method**: LoRA (Low-Rank Adaptation)
+- **LoRA Rank**: 16
+- **LoRA Alpha**: 32
+- **Training Device**: Mac Studio MPS (fp32)
+- **Deployment**: HuggingFace Spaces / ModelScope
+
+### Performance Metrics
+
+- **Eval Loss**: 0.55
+- **Accuracy**: 87.9%
+
+### License
+
+Apache License 2.0
 
 ---
 
-## License
+## 关于 LeyoAI (About LeyoAI)
 
-MIT License — 杭州市上城区乐友信息服务工作室
+**LeyoAI** 是杭州市上城区乐友信息服务工作室旗下的垂直领域 AI MaaS 平台，提供四大 AI 助手：
 
-## Links
+- **Cyber Model**: AI 安全助手
+- **Video Model**: 视频安全助手
+- **Flow Model**: 流程自动化助手
+- **Analytics Model**: 数据分析助手
 
-- 🌐 [LeyoAI](https://leyoai.vercel.app) | 🤗 [HuggingFace](https://huggingface.co/FFZwai) | 💻 [GitHub](https://github.com/richard3153)
+**LeyoAI** is a vertical AI MaaS platform by Hangzhou Shangcheng Leyou Information Service Studio, providing four AI assistants:
+
+- **Cyber Model**: AI Security Assistant
+- **Video Model**: Video Safety Assistant
+- **Flow Model**: Workflow Automation Assistant
+- **Analytics Model**: Data Analytics Assistant
+
+### 链接 (Links)
+
+- 官网 (Website): https://leyoai.vercel.app
+- GitHub: https://github.com/richard3153/leyoai-landing
+- HuggingFace: https://huggingface.co/FFZwai
+
+---
+
+## Framework Versions
+
+- PEFT 0.18.1
+- Transformers 4.51.3
+- PyTorch 2.7.0
+- Datasets 3.6.0
